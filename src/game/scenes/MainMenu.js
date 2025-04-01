@@ -12,61 +12,48 @@ export class MainMenu extends Scene
 
     create ()
     {
-        this.add.image(512, 384, 'background');
+        this.add.image(540, 540, 'background');
+        var startButton = this.add.image(512, 1080-140, 'main_menu').setInteractive();
+        var characterSelector = new CharacterSelectorContainer(this, 512, 320);
 
-        this.logo = this.add.image(512, 300, 'logo').setDepth(100);
-
-        this.add.text(512, 460, 'Main Menu', {
-            fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            align: 'center'
-        }).setDepth(100).setOrigin(0.5);
-        
         EventBus.emit('current-scene-ready', this);
+        //enable startbutton 
+        startButton.on('pointerdown', () => {
+            this.registry.set('playerModel', characterSelector.character);
+            this.scene.start('Game');
+        })
     }
+}
+class CharacterSelectorContainer extends Phaser.GameObjects.Container {
+    
+    characterIconSize = [128, 128];
+    characterList = [ 'cheddar_bob', 'goober', 'thompson']; //list characters by their file name (exclude extension)
+    character = this.characterList[0]; //selected character
+    characterObjects = []; //objects representing characters
+    selector;
 
-    changeScene ()
-    {
-        if (this.logoTween)
-        {
-            this.logoTween.stop();
-            this.logoTween = null;
-        }
+    constructor(scene, x, y, children) {
+        super(scene, x, y ,children);
+        
+        
+        this.selector = scene.add.image(x, y, 'selector');
+        var calcY = (i) => {return y + (this.characterIconSize[1] + 20) * i;}
 
-        this.scene.start('Game');
-    }
+        for (let i = 0; i < this.characterList.length; i++) {
+            //create interactive game object for each character
+            this.characterObjects[i] = scene.add.image(x, calcY(i), 
+                this.characterList[i]).setInteractive();
+            //controls space between icons
+            
 
-    moveLogo (reactCallback)
-    {
-        if (this.logoTween)
-        {
-            if (this.logoTween.isPlaying())
-            {
-                this.logoTween.pause();
-            }
-            else
-            {
-                this.logoTween.play();
-            }
-        }
-        else
-        {
-            this.logoTween = this.tweens.add({
-                targets: this.logo,
-                x: { value: 750, duration: 3000, ease: 'Back.easeInOut' },
-                y: { value: 80, duration: 1500, ease: 'Sine.easeOut' },
-                yoyo: true,
-                repeat: -1,
-                onUpdate: () => {
-                    if (reactCallback)
-                    {
-                        reactCallback({
-                            x: Math.floor(this.logo.x),
-                            y: Math.floor(this.logo.y)
-                        });
-                    }
+            //set each character as a button
+            this.characterObjects[i].on('pointerdown', () => 
+                {
+                    this.character = this.characterList[i];
+                    this.selector.setPosition(x, calcY(i));
+                    console.log('selected: ' + this.character);
                 }
-            });
+            )
         }
     }
 }

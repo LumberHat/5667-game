@@ -13,7 +13,6 @@ export const PhaserGame = forwardRef(function PhaserGame ({ currentActiveScene }
         if (game.current === undefined)
         {
             game.current = StartGame("game-container");
-            
             if (ref !== null)
             {
                 ref.current = { game: game.current, scene: null };
@@ -21,32 +20,26 @@ export const PhaserGame = forwardRef(function PhaserGame ({ currentActiveScene }
         }
 
         return () => {
-
             if (game.current)
             {
                 game.current.destroy(true);
                 game.current = undefined;
             }
-
         }
+
     }, [ref]);
 
     useEffect(() => {
-
         EventBus.on('current-scene-ready', (currentScene) => {
-
             if (currentActiveScene instanceof Function)
             {
                 currentActiveScene(currentScene);
             }
             ref.current.scene = currentScene;
-            
         });
 
         return () => {
-
             EventBus.removeListener('current-scene-ready');
-
         }
         
     }, [currentActiveScene, ref])
@@ -54,7 +47,6 @@ export const PhaserGame = forwardRef(function PhaserGame ({ currentActiveScene }
     return (
         <div id="game-container"></div>
     );
-
 });
 
 // Props definitions
