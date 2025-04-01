@@ -20,6 +20,9 @@ const config = {
             fps: 30
         }
     },
+    input: {
+        activePointers: 1
+    },
     scene: [
         Boot,
         Preloader,

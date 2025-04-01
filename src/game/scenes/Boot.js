@@ -18,6 +18,7 @@ export class Boot extends Scene
         this.load.image('thompson', 'assets/img/thompson.png');
         this.load.image('cheddar_bob', 'assets/img/cheddar_bob.png');
         this.load.image('selector', 'assets/img/selector.png');
+        this.load.image('bomb', 'assets/img/bomb.png');
 
     }
 
