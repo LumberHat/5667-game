@@ -8,4 +8,3 @@ steps:
   automapSubstitutions: true
 images:
 - 'us-west2-docker.pkg.dev/advanced-sof/quickstart-docker-repo/quickstart-image'
-g
