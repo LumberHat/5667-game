@@ -4,7 +4,9 @@ options:
 steps:
 - name: 'build-image'
   script: |
-    docker build -t us-west2-docker.pkg.dev/$PROJECT_ID/quickstart-docker-repo/quickstart-image .
+    docker build -t us-central1-docker.pkg.dev/advanced-sof/cs-5667-game/5667-game .
   automapSubstitutions: true
 images:
-- 'us-west2-docker.pkg.dev/advanced-sof/quickstart-docker-repo/quickstart-image'
+- 'us-central1-docker.pkg.dev/advanced-sof/cs-5667-game/5667-game'
+
+
