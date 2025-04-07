@@ -1,11 +1,11 @@
 options:
-  logging: CLOUD_LOGGING_ONLY
+  logging: NONE
 
 steps:
-- name: 'gcr.io/cloud-builders/docker'
+- name: 'Build Image'
   script: |
-    docker build -t us-west2-docker.pkg.dev/$PROJECT_ID/quickstart-docker-repo/quickstart-image:tag1 .
+    docker build -t us-west2-docker.pkg.dev/$PROJECT_ID/quickstart-docker-repo/quickstart-image .
   automapSubstitutions: true
 images:
-- 'us-west2-docker.pkg.dev/advanced-sof/quickstart-docker-repo/quickstart-image:tag1'
+- 'us-west2-docker.pkg.dev/advanced-sof/quickstart-docker-repo/quickstart-image'
 g
