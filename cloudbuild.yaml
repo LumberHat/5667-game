@@ -1,11 +1,10 @@
 options:
-  logging: NONE
+  logging: CLOUD_LOGGING_ONLY
 
 steps:
 - name: 'build-image'
   script: |
     docker build -t us-central1-docker.pkg.dev/advanced-sof/cs-5667-game/5667-game .
-  automapSubstitutions: true
 images:
 - 'us-central1-docker.pkg.dev/advanced-sof/cs-5667-game/5667-game'
 
