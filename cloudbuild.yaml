@@ -2,7 +2,7 @@ options:
   logging: CLOUD_LOGGING_ONLY
 
 steps:
-- name: 'build-image'
+- name: 'gcr.io/cloud-builders/docker'
   script: |
     docker build -t us-central1-docker.pkg.dev/advanced-sof/cs-5667-game/5667-game .
 images:
