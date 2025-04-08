@@ -5,7 +5,7 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'us-central1-docker.pkg.dev/advanced-sof/cs-5667-game/5667-game', '.']
 
-  - name: 'gcr.io/cloud-builders/docker'
+- name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'us-central1-docker.pkg.dev/advanced-sof/cs-5667-game/5667-game']
 
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
