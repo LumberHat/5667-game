@@ -1,18 +1,25 @@
 options:
   logging: CLOUD_LOGGING_ONLY
-
 steps:
+# Build the image
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'us-central1-docker.pkg.dev/advanced-sof/cs-5667-game/5667-game', '.']
-
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/advanced-sof/cs-5667-game/cs-5667-game/the-game:$COMMIT_SHA', '.']
+# Push the image to Artifact Registry
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'us-central1-docker.pkg.dev/advanced-sof/cs-5667-game/5667-game']
-
+  args: ['push', 'us-central1-docker.pkg.dev/advanced-sof/cs-5667-game/cs-5667-game/the-game:$COMMIT_SHA']
+# Deploy image to Cloud Run
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: gcloud
-  args: ['run', 'deploy', 'the-game', '--image', 'us-central1-docker.pkg.dev/advanced-sof/cs-5667-game/5667-game', '--region', 'us-central1']
-
+  args: 
+    - 'run'
+    - 'deploy'
+    - 'the-game'
+    - '--image'
+    - 'us-central1-docker.pkg.dev/advanced-sof/cs-5667-game/cs-5667-game/the-game:$COMMIT_SHA'
+    - '--region'
+    - 'us-central1'
 images:
-- 'us-central1-docker.pkg.dev/advanced-sof/cs-5667-game/5667-game'
+- 'us-central1-docker.pkg.dev/advanced-sof/cs-5667-game/cs-5667-game/the-game:$COMMIT_SHA'
+
 
 
