@@ -2,11 +2,6 @@ options:
   logging: CLOUD_LOGGING_ONLY
 
 steps:
-- name: 'ubuntu'
-  script: |
-    #!/usr/bin/env bash
-    echo "us-central1 advanced-sof $TAG_NAME cs-5667-game"
-
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'us-central1-docker.pkg.dev/advanced-sof/cs-5667-game/5667-game', '.']
 
