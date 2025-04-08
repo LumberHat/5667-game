@@ -1,26 +1,23 @@
 options:
   logging: CLOUD_LOGGING_ONLY
 
-env:
-- 'LOCATION=$LOCATION'
-# - 'PROJECT_ID=advanced-sof'
-- 'TAG_NAME=$TAG_NAME'
-- 'REPO_NAME=$REPO_NAME'
-
 steps:
 - name: 'ubuntu'
   script: |
     #!/usr/bin/env bash
-    echo "$LOCATION advanced-sof $TAG_NAME $REPO_NAME"
+    echo "us-central1 advanced-sof $TAG_NAME cs-5667-game"
 
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', '$LOCATION-docker.pkg.dev/advanced-sof/$REPO_NAME/5667-game$TAG_NAME', '.']
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/advanced-sof/cs-5667-game/5667-game', '.']
+
   - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', '$LOCATION-docker.pkg.dev/advanced-sof/$REPO_NAME/5667-game$TAG_NAME']
+  args: ['push', 'us-central1-docker.pkg.dev/advanced-sof/cs-5667-game/5667-game']
+
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: gcloud
-  args: ['run', 'deploy', 'the-game', '--image', '$LOCATION-docker.pkg.dev/advanced-sof/$REPO_NAME/5667-game$TAG_NAME', '--region', '$LOCATION']
+  args: ['run', 'deploy', 'the-game', '--image', 'us-central1-docker.pkg.dev/advanced-sof/cs-5667-game/5667-game', '--region', 'us-central1']
+
 images:
-- '$LOCATION-docker.pkg.dev/advanced-sof/$REPO_NAME/5667-game:$TAG_NAME'
+- 'us-central1-docker.pkg.dev/advanced-sof/cs-5667-game/5667-game'
 
 
