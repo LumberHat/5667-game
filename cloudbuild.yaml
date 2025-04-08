@@ -1,7 +1,18 @@
 options:
   logging: CLOUD_LOGGING_ONLY
 
+env:
+- 'LOCATION=$LOCATION'
+- 'PROJECT_ID=$PROJECT_ID'
+- 'TAG_NAME=$TAG_NAME'
+- 'REPO_NAME=$REPO_NAME'
+
 steps:
+- name: 'ubuntu'
+  script: |
+    #!/usr/bin/env bash
+    echo "$LOCATION $PROJECT_ID $TAG_NAME $REPO_NAME"
+
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', '$LOCATION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/5667-game$TAG_NAME', '.']
   - name: 'gcr.io/cloud-builders/docker'
