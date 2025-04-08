@@ -3,7 +3,7 @@ options:
 
 env:
 - 'LOCATION=$LOCATION'
-- 'PROJECT_ID=$PROJECT_ID'
+# - 'PROJECT_ID=advanced-sof'
 - 'TAG_NAME=$TAG_NAME'
 - 'REPO_NAME=$REPO_NAME'
 
@@ -11,16 +11,16 @@ steps:
 - name: 'ubuntu'
   script: |
     #!/usr/bin/env bash
-    echo "$LOCATION $PROJECT_ID $TAG_NAME $REPO_NAME"
+    echo "$LOCATION advanced-sof $TAG_NAME $REPO_NAME"
 
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', '$LOCATION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/5667-game$TAG_NAME', '.']
+  args: ['build', '-t', '$LOCATION-docker.pkg.dev/advanced-sof/$REPO_NAME/5667-game$TAG_NAME', '.']
   - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', '$LOCATION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/5667-game$TAG_NAME']
+  args: ['push', '$LOCATION-docker.pkg.dev/advanced-sof/$REPO_NAME/5667-game$TAG_NAME']
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: gcloud
-  args: ['run', 'deploy', 'the-game', '--image', '$LOCATION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/5667-game$TAG_NAME', '--region', '$LOCATION']
+  args: ['run', 'deploy', 'the-game', '--image', '$LOCATION-docker.pkg.dev/advanced-sof/$REPO_NAME/5667-game$TAG_NAME', '--region', '$LOCATION']
 images:
-- '$LOCATION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/5667-game:$TAG_NAME'
+- '$LOCATION-docker.pkg.dev/advanced-sof/$REPO_NAME/5667-game:$TAG_NAME'
 
 
