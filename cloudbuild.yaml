@@ -3,9 +3,13 @@ options:
 
 steps:
 - name: 'gcr.io/cloud-builders/docker'
-  script: |
-    docker build -t us-central1-docker.pkg.dev/advanced-sof/cs-5667-game/5667-game .
+  args: ['build', '-t', '$LOCATION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/5667-game$TAG_NAME', '.']
+  - name: 'gcr.io/cloud-builders/docker'
+  args: ['push', '$LOCATION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/5667-game$TAG_NAME']
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: gcloud
+  args: ['run', 'deploy', 'the-game', '--image', '$LOCATION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/5667-game$TAG_NAME', '--region', '$LOCATION']
 images:
-- 'us-central1-docker.pkg.dev/advanced-sof/cs-5667-game/5667-game'
+- '$LOCATION-docker.pkg.dev/$PROJECT_ID/$REPO_NAME/5667-game:$TAG_NAME'
 
 
