@@ -1,15 +1,37 @@
 options:
   logging: CLOUD_LOGGING_ONLY
+
 steps:
+# Deploy the test workflow
 - id: 'deploy-test-workflow'
   name: 'gcr.io/cloud-builders/gcloud'
-  args: ['workflows', 'deploy', 'a', '--source', 'workflow.yaml']
+  args: ['workflows', 'deploy', 'run-tests', '--source', 'workflow.yaml']
+
+  # Run the test workflow and capture the output
+- id: 'run-test-workflow'
+  name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: 'bash'
+  args: ['-c', 'gcloud workflows run run-tests > /workspace/testoutput.log']
+
+# Delete the test workflow
+- id: 'delete-test-workflow'
+  name: 'gcr.io/cloud-builders/gcloud'
+  args: ['workflows', 'delete', 'run-tests', '--quiet']
+
+  # Check the test output
+- id: 'check-test-workflow'
+  name: 'gcr.io/cloud-builders/gcloud'
+  entrypoint: 'bash'
+  args: ['test.sh']
+
 # Build the image
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'us-central1-docker.pkg.dev/advanced-sof/cs-5667-game/cs-5667-game/the-game:$COMMIT_SHA', '.']
+
 # Push the image to Artifact Registry
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'us-central1-docker.pkg.dev/advanced-sof/cs-5667-game/cs-5667-game/the-game:$COMMIT_SHA']
+
 # Deploy image to Cloud Run
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: gcloud
@@ -21,8 +43,9 @@ steps:
     - 'us-central1-docker.pkg.dev/advanced-sof/cs-5667-game/cs-5667-game/the-game:$COMMIT_SHA'
     - '--region'
     - 'us-central1'
+
 images:
 - 'us-central1-docker.pkg.dev/advanced-sof/cs-5667-game/cs-5667-game/the-game:$COMMIT_SHA'
 
-
+# https://LumberHat:$_REPO_TOKEN@github.com/LumberHat/5667-game.git
 
