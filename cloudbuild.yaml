@@ -1,6 +1,9 @@
 options:
   logging: CLOUD_LOGGING_ONLY
 steps:
+- id: 'deploy-test-workflow'
+  name: 'gcr.io/cloud-builders/gcloud'
+  args: ['workflows', 'deploy', 'a', '--source', 'workflow.yaml']
 # Build the image
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'us-central1-docker.pkg.dev/advanced-sof/cs-5667-game/cs-5667-game/the-game:$COMMIT_SHA', '.']
