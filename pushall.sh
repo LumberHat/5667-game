@@ -4,5 +4,4 @@ git config --global user.email "lsb1412@hotmail.com"
 git config --global user.name "LumberHat"
 git config pull.rebase true
 git pull origin main --allow-unrelated-histories
-git merge origin origin/main
 git push origin main
