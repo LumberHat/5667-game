@@ -27,8 +27,8 @@ steps:
   #
 - id: 'git-push-workflow'
   name:  'gcr.io/cloud-builders/git'
-  entrypoint: 'git'
-  args: ['push', 'https://$_REPO_TOKEN@github.com/LumberHat/5667-game.git']
+  entrypoint: 'bash'
+  args: ['pushall.sh', '$_REPO_TOKEN']
 
 # Build the image
 - name: 'gcr.io/cloud-builders/docker'
@@ -53,5 +53,5 @@ steps:
 images:
 - 'us-central1-docker.pkg.dev/advanced-sof/cs-5667-game/cs-5667-game/the-game:$COMMIT_SHA'
 
-# https://LumberHat:$_REPO_TOKEN@github.com/LumberHat/5667-game.git 
+#  
 
