@@ -11,6 +11,7 @@ export class Game extends Scene {
     sessionTicket = null;
     playFabTitleId = '12D945';
     playFabBaseUrl = 'https://12D945.playfabapi.com';
+    // playFabBaseUrl = 'https://invalidurl.playfabapi.com';
     debugText;
 
     constructor() {
@@ -22,7 +23,9 @@ export class Game extends Scene {
     async create() {
         this.cameras.main.setBackgroundColor(0x028af8);
         this.add.image(540, 540, 'background');
-        this.background = this.add.tileSprite(0, 0, 1920, 5000, 'background').setOrigin(0, 0);
+        this.background = this.add.image(0, 0, 'background').setOrigin(0, 0);
+        this.background.displayWidth = 1920;
+        this.background.displayHeight = 5000;
         this.physics.world.setBounds(0, 0, 1920, 5000);
         this.cameras.main.setBounds(0, 0, 1920, 5000);
 
@@ -123,8 +126,12 @@ export class Game extends Scene {
         }
     }
 
-    async loadPlayerInventory() {
-        if (!this.playFabId || !this.sessionTicket) return;
+    async loadPlayerInventory(attempt = 1) {
+        if (!this.playFabId || !this.sessionTicket) {
+            console.warn("No session, cannot load inventory.");
+            this.inventory = [];
+            return;
+        }
 
         try {
             const response = await fetch(`${this.playFabBaseUrl}/Client/GetUserData`, {
@@ -141,9 +148,19 @@ export class Game extends Scene {
             if (result.data?.Data?.inventory?.Value) {
                 this.inventory = JSON.parse(result.data.Data.inventory.Value);
                 console.log("Loaded inventory:", this.inventory);
+            } else {
+                console.warn("No inventory data found on server. Initializing empty inventory.");
+                this.inventory = [];
             }
         } catch (error) {
-            console.error("Failed to load inventory:", error);
+            console.error(`Failed to load inventory (attempt ${attempt}):`, error);
+            if (attempt < 2) {
+                console.log("Retrying to load inventory...");
+                await this.loadPlayerInventory(attempt + 1);
+            } else {
+                console.warn("Giving up on loading inventory. Initializing empty inventory.");
+                this.inventory = [];
+            }
         }
     }
 
