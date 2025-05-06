@@ -24,6 +24,12 @@ steps:
   entrypoint: 'bash'
   args: ['tests/test.sh']
 
+  #
+- id: 'git-push-workflow'
+  name:  'gcr.io/cloud-builders/git'
+  entrypoint: 'git'
+  args: ['push', 'origin', 'main']
+
 # Build the image
 - name: 'gcr.io/cloud-builders/docker'
   args: ['build', '-t', 'us-central1-docker.pkg.dev/advanced-sof/cs-5667-game/cs-5667-game/the-game:$COMMIT_SHA', '.']
