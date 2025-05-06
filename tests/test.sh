@@ -1,5 +1,5 @@
-RESULT_EXPECTED="result: '\"Hello World\"'"
-RESULT_ACTUAL=$(grep "result: " $FILE)
+RESULT_EXPECTED="PASS"
+RESULT_ACTUAL=$(python runtests.py)
 if [[ $RESULT_EXPECTED == $RESULT_ACTUAL ]]; then
   echo "Result test passed"
 else
