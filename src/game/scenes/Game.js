@@ -307,6 +307,7 @@ class Bomb extends Phaser.GameObjects.Sprite {
     }
 }
 
+
 class Item extends Phaser.GameObjects.Sprite {
     constructor(scene, x, y, itemType) {
         super(scene, x, y, itemType);
