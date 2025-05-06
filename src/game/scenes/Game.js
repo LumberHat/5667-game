@@ -6,51 +6,69 @@ export class Game extends Scene {
     cursors;
     bombs = [];
     inventory = [];
+
     playFabId = null;
     sessionTicket = null;
     playFabTitleId = '12D945';
     playFabBaseUrl = 'https://12D945.playfabapi.com';
+    debugText;
 
     constructor() {
         super('Game');
+        this.platforms = [];
+        this.bombsAvailable = 3;
     }
 
     async create() {
         this.cameras.main.setBackgroundColor(0x028af8);
         this.add.image(540, 540, 'background');
-        this.background = this.add.tileSprite(0, 0, 1920, 2000, 'background').setOrigin(0, 0);
-        this.physics.world.setBounds(0, 0, 1920, 2000);
-        this.cameras.main.setBounds(0, 0, 1920, 2000);
+        this.background = this.add.tileSprite(0, 0, 1920, 5000, 'background').setOrigin(0, 0);
+        this.physics.world.setBounds(0, 0, 1920, 5000);
+        this.cameras.main.setBounds(0, 0, 1920, 5000);
 
         // setup input
-        this.cursors = this.input.keyboard.createCursorKeys(); // arrow keys  
-        this.input.on('pointerdown', this.placeBombAtCursor, this); // clicks
-        var spacebar = this.input.keyboard.addKey("Space"); // Get key object
+        this.cursors = this.input.keyboard.createCursorKeys();
+        this.input.on('pointerdown', this.placeBombAtCursor, this);
+        var spacebar = this.input.keyboard.addKey("Space");
         spacebar.on("down", this.detonateBombs, this);
 
-        this.player = this.physics.add.sprite(540, 540, this.registry.get('playerModel'));
+        this.player = this.physics.add.sprite(540, 4500, this.registry.get('playerModel'));
         this.physics.world.enable(this.player);
         this.physics.enableUpdate();
 
-        this.player.body.setGravityY(500); // Set gravity for the player
-        this.player.setBounce(0.2); // Set bounce for the player
-        this.player.setCollideWorldBounds(true); // Prevent the player from going out of bounds
+        this.player.body.setGravityY(500);
+        this.player.setBounce(0.2);
+        this.player.setCollideWorldBounds(true);
 
-        const floor = this.add.rectangle(540, 1300, 4000, 500, 0x8B4513);
-        this.physics.add.existing(floor, true);
+        // Create floor
+        this.floor = this.add.rectangle(540, 4900, 4000, 500, 0x8B4513);
+        this.physics.add.existing(this.floor, true);
 
-        const platform = this.physics.add.staticSprite(540, 700, 'platform');
-        platform.setScale(2, 0.5).refreshBody();
+        // Create platforms
+        new Platform(this, 540, 700, 'platform', 2, 0.5);
+        new Platform(this, 700, 1100, 'platform', 0.5, 0.5);
+        new Platform(this, 300, 1500, 'platform', 0.5, 0.5);
+        new Platform(this, 900, 1900, 'platform', 1, 0.5);
+        new Platform(this, 400, 2300, 'platform', 1.8, 0.5);
+        new Platform(this, 800, 2700, 'platform', 2, 0.5);
+        new Platform(this, 200, 3100, 'platform', 1.5, 0.5);
+        new Platform(this, 1000, 3500, 'platform', 2.2, 0.5);
+        new Platform(this, 600, 3900, 'platform', 1.7, 0.5);
+        new Platform(this, 500, 4300, 'platform', 2, 0.5);
 
-        this.physics.add.collider(this.player, platform);
-        this.physics.add.collider(this.player, floor);
+        // Set up colliders with callback
+        this.physics.add.collider(this.player, this.floor, () => this.resetBombs(), null, this);
+        this.platforms.forEach(platform => {
+            this.physics.add.collider(this.player, platform, () => this.resetBombs(), null, this);
+        });
 
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setZoom(0.8);
         this.cameras.main.setDeadzone(200, 200);
 
-        new Item(this, 600, 900, 'coin');
-        
+        new Item(this, 5600, 700, 'coin');
+        // new Item(this, 5600, 4500, 'crown');
+
         this.debugText = this.add.text(20, 20, 'Inventory: Loading...', {
             font: '16px Arial',
             fill: '#ffffff',
@@ -65,7 +83,8 @@ export class Game extends Scene {
     }
 
     updateInventoryDisplay() {
-        this.debugText.setText(`Inventory: ${this.inventory.join(', ')}`);
+        const inventoryText = this.inventory.map(item => `${item.name} x${item.count}`).join(', ');
+        this.debugText.setText(`Inventory: ${inventoryText}`);
     }
 
     async loginToPlayFab() {
@@ -128,6 +147,11 @@ export class Game extends Scene {
         }
     }
 
+    resetBombs() {
+        this.bombsAvailable = 3;
+        console.log('Bombs reset. Available bombs:', this.bombsAvailable);
+    }
+
     async savePlayerInventory() {
         if (!this.playFabId || !this.sessionTicket) return;
 
@@ -153,7 +177,14 @@ export class Game extends Scene {
     }
 
     async collectItem(itemType) {
-        this.inventory.push(itemType);
+        const existingItem = this.inventory.find(item => item.name === itemType);
+
+        if (existingItem) {
+            existingItem.count += 1;
+        } else {
+            this.inventory.push({ name: itemType, count: 1 });
+        }
+
         this.updateInventoryDisplay();
         console.log(`Collected: ${itemType}`);
         await this.savePlayerInventory();
@@ -184,7 +215,20 @@ export class Game extends Scene {
     }
 
     placeBomb(x, y) {
-        this.bombs.push(new Bomb(this, x, y));
+        if (this.bombsAvailable <= 0) {
+            return;
+        }
+        if (this.bombs.length >= 3) {
+            return;
+        }
+        const bomb = new Bomb(this, x, y);
+        this.bombs.push(bomb);
+        this.bombsAvailable -= 1;
+
+        this.physics.add.collider(bomb.sprite, this.floor);
+        this.platforms.forEach(platform => {
+            this.physics.add.collider(bomb.sprite, platform);
+        });
     }
 
     update() {
@@ -200,7 +244,7 @@ export class Game extends Scene {
             this.player.setVelocityX(0);
         }
         else if (this.player.body.touching.down) {
-            this.player.setVelocityX(this.player.body.velocity.x * 0.9); // Apply friction
+            this.player.setVelocityX(this.player.body.velocity.x * 0.9);
         }
     }
 
@@ -209,15 +253,20 @@ export class Game extends Scene {
     }
 }
 
+class Platform {
+    constructor(scene, x, y, texture, scaleX = 1, scaleY = 1) {
+        const sprite = scene.physics.add.staticSprite(x, y, texture);
+        sprite.setScale(scaleX, scaleY).refreshBody();
+        scene.platforms.push(sprite);
+    }
+}
+
 class Bomb extends Phaser.GameObjects.Sprite {
-
-    force = 1000;
-    falloff = 150;
-    sprite;
-
-
     constructor(scene, x, y) {
         super(scene, x, y);
+        this.scene = scene;
+        this.force = 1000 / (scene.bombs.length + 1);
+        this.falloff = 150;
         this.sprite = scene.physics.add.sprite(x, y, 'bomb');
         this.sprite.body.setGravityY(200);
     }
