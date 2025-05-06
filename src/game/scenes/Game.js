@@ -133,6 +133,7 @@ export class Game extends Scene {
             this.inventory = [];
             return;
         }
+        
 
         try {
             const response = await fetch(`${this.playFabBaseUrl}/Client/GetUserData`, {
