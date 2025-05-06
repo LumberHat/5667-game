@@ -126,6 +126,7 @@ export class Game extends Scene {
         }
     }
 
+
     async loadPlayerInventory(attempt = 1) {
         if (!this.playFabId || !this.sessionTicket) {
             console.warn("No session, cannot load inventory.");
