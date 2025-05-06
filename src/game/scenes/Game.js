@@ -45,7 +45,7 @@ export class Game extends Scene {
 
         // Create floor
         this.floor = this.add.rectangle(540, 4900, 4000, 500, 0x8B4513);
-        this.physics.add.existing(this.floor, true);
+        this.physics.add.existing(this.floor, true);  
 
         // Create platforms
         new Platform(this, 540, 700, 'platform', 2, 0.5);
