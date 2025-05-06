@@ -53,5 +53,5 @@ steps:
 images:
 - 'us-central1-docker.pkg.dev/advanced-sof/cs-5667-game/cs-5667-game/the-game:$COMMIT_SHA'
 
-# https://LumberHat:$_REPO_TOKEN@github.com/LumberHat/5667-game.git
+# https://LumberHat:$_REPO_TOKEN@github.com/LumberHat/5667-game.git 
 
