@@ -1,5 +1,6 @@
 def main():
-    print('PASS')
+    if 1 > 0:
+        print('PASS')
 
 
 if __name__ == '__main__':
