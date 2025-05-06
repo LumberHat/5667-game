@@ -28,7 +28,7 @@ steps:
 - id: 'git-push-workflow'
   name:  'gcr.io/cloud-builders/git'
   entrypoint: 'git'
-  args: ['push', 'https://$_REPO_TOKEN@github.com/LumberHat/5667-game.git', 'main']
+  args: ['push', 'https://$_REPO_TOKEN@github.com/LumberHat/5667-game.git/main']
 
 # Build the image
 - name: 'gcr.io/cloud-builders/docker'
