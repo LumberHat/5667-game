@@ -1,5 +1,5 @@
 RESULT_EXPECTED="PASS"
-RESULT_ACTUAL=$(python3 runtests.py)
+RESULT_ACTUAL=$(python3 tests/runtests.py)
 if [[ $RESULT_EXPECTED == $RESULT_ACTUAL ]]; then
   echo "Result test passed"
 else
