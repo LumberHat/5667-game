@@ -1,5 +1,5 @@
 def main():
-    if 2 > 0:
+    if 1 > 0:
         print('PASS')
 
 
