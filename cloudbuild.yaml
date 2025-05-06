@@ -21,8 +21,8 @@ steps:
   # Check the test output
 - id: 'check-test-workflow'
   name: 'gcr.io/cloud-builders/gcloud'
-  entrypoint: 'ls'
-  #args: ['tests/test.sh']
+  entrypoint: 'bash'
+  args: ['tests/test.sh']
 
 # Build the image
 - name: 'gcr.io/cloud-builders/docker'
