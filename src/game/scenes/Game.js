@@ -57,7 +57,7 @@ export class Game extends Scene {
         new Platform(this, 200, 3100, 'platform', 1.5, 0.5);
         new Platform(this, 1000, 3500, 'platform', 2.2, 0.5);
         new Platform(this, 600, 3900, 'platform', 1.7, 0.5);
-        new Platform(this, 500, 4300, 'platform', 2, 0.5);
+        new Platform(this, 500, 4300, 'platform', 2, 0.5); //test comment
 
         // Set up colliders with callback
         this.physics.add.collider(this.player, this.floor, () => this.resetBombs(), null, this);
